@@ -44,14 +44,32 @@ class Products(db.Model):
 db.create_all()
 
 
-# creating s resource
+# verify if it's a valid credit card number
+def verify_credit_card(card_num):
+    if len(card_num) != 16:
+        return False
+    else:
+        if card_num[0] not in (4, 5, 6):
+            return False
+        #TODO: finish it
+
+
+
+# creating a resource
 class AddUser(Resource):
 
     def post(self):
         # get posted data
         posted_data = request.get_json()
 
-        #TODO check if user email in db
+        #check if user exist
+        user_email = posted_data["email"]
+        if Users.query.filter_by(email=user_email).first():
+            return_map = {
+                "status code": 403,
+                "msg": "User with that email already exists"
+            }
+            return jsonify(return_map)
 
         #add user to db
         new_user = Users(
@@ -101,6 +119,22 @@ class AddProduct(Resource):
 
     def post(self):
         posted_data = request.get_json()
+
+        #check if valid catogory
+        if posted_data["category"] not in ("trenerki", "pizami", "bluzi"):
+            return_map = {
+                "status code": 402,
+                "msg": "Not a valid product category."
+            }
+            return jsonify(return_map)
+
+        #check if valid size
+        if posted_data["size"] not in ("S", "M", "L", "XL"):
+            return_map = {
+                "status code": 405,
+                "msg": "Not a valid size description."
+            }
+            return jsonify(return_map)
 
         new_product = Products (
             name=posted_data["name"],
