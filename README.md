@@ -30,13 +30,13 @@ so ostanatite fajlovi.
 
 ### API Endpoints
 
-| Resource      | Address         | http Protocol | Params                            |
-|---------------|-----------------|---------------|-----------------------------------|
-| AddUser       | /add_user       | POST          | {full json}*                      |
-| RemoveUser    | /remove_user    | DELETE        | {"email":"user@mail.com"}         |
-| AddProduct    | /add_product    | POST          | {full json}*                      |
-| RemoveProduct | /remove_product | DELETE        | {"name":"product_name"}           |
-| ListProducts  | /list_products  | GET           | KEY: "currency"<br/> VALUE: "XXX" |
+| Resource      | Address         | Method | Params                            |
+|---------------|-----------------|--------|-----------------------------------|
+| AddUser       | /add_user       | POST   | {full json}*                      |
+| RemoveUser    | /remove_user    | DELETE | {"email":"user@mail.com"}         |
+| AddProduct    | /add_product    | POST   | {full json}*                      |
+| RemoveProduct | /remove_product | DELETE | {"name":"product_name"}           |
+| ListProducts  | /list_products  | GET    | KEY: "currency"<br/> VALUE: "XXX" |
 
 
 
@@ -93,7 +93,8 @@ drugi vrednosti od predlozenite. Toa bi mozelo da se spreci so nesto nalik:
 ```commandline
 db.Column(db.Enum(Choices, values=[]))
 ```
-
+* Vo prilog link za pristap do static Postman snapshot od kolekcijata (via json link):
+https://www.getpostman.com/collections/a7a544c735001079c693
 
 ### Izrabotil:
 ### Perkovikj Nino
