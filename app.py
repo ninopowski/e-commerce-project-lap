@@ -141,7 +141,7 @@ class AddProduct(Resource):
         #check if valid catogory
         if posted_data["category"] not in ("trenerki", "pizami", "bluzi"):
             return_map = {
-                "status code": 402,
+                "status code": 406,
                 "msg": "Not a valid product category."
             }
             return jsonify(return_map)
@@ -149,7 +149,7 @@ class AddProduct(Resource):
         #check if valid size
         if posted_data["size"] not in ("S", "M", "L", "XL"):
             return_map = {
-                "status code": 405,
+                "status code": 406,
                 "msg": "Not a valid size description."
             }
             return jsonify(return_map)
@@ -203,6 +203,7 @@ class RemoveProduct(Resource):
 
 
 
+# currency conversion
 conversion_rates = {
     "MKD to USD": 0.018,
     "MKD to EUR": 0.016,
@@ -231,6 +232,14 @@ class ListProducts(Resource):
 
     def get(self):
         desired_currency = request.args.get("currency")
+        if desired_currency not in ("MKD", "USD", "EUR"):
+            return_map = {
+                "status code": 406,
+                "msg": "Not a valid currency"
+            }
+            return jsonify(return_map)
+
+        #arrange by cheapest value no matter the currency
         all_products = Products.query.all()
         all_products_dict = [product.to_dict() for product in all_products]
         for item in all_products_dict:
