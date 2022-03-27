@@ -84,7 +84,7 @@ class AddUser(Resource):
         if credit_card:
             if not verify_credit_card(credit_card):
                 return_map = {
-                    "status code": 408,
+                    "status code": 406,
                     "msg": "Invalid credit card number"
                 }
                 return jsonify(return_map)

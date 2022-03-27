@@ -3,15 +3,17 @@
 ### Voved
 
 E commerce app e del od ednostaven e-commerce sistem,
-so koj se ovozmozuva kreiranje i manipulacija na podatoci povrzani
+so koj se ovozmozuva kreiranje i brisenje na podatoci povrzani
 so potrosuvaci i proizvodi.
 
 ### Funkcionalnosti
 
 * Kreiranje na baza na podatoci so potrosuvaci i produkti
 * Dodavanje i brisenje na podatoci od bazata preku soodvetni
-API endpoints, i
-* Prikazuvanje na site proizvodi od najeftin do najskap
+API endpoints,
+* Verifikacija na validna creditna karticka pri zapis
+* Prikazuvanje na site proizvodi od najeftin do najskap so izbor
+razlicna valuta
 
 ### Voved za instalacija
 
@@ -20,7 +22,8 @@ koi e potrebno da se instaliraat kako bi rabotela aplikacijata.
 * Python version: 3.80
 * Run app.py za start
 * Konekcijata so API-to i negovoto testiranje moze da se napravi
-so pomos na Postman preku local host (http://127.0.0.1:5000/)
+so pomos na Postman preku local host (http://127.0.0.1:5000/) 
+i navedenite adresi vo tabelata podulu.
 * Back up na bazata so podatoci (shop.db) e vo istiot folder
 so ostanatite fajlovi.
 
@@ -62,14 +65,14 @@ so ostanatite fajlovi.
     "currency": "MKD"
 }
 ```
-* RemoveUser i RemoveProduct ocekuvaat (body/raw/json), vo oblik (soodvetno):
+* RemoveUser ocekuva (body/raw/json), vo oblik:
 
 ```
-  {
+{
     "email": "user@mail.com"
 }
 ```
-i 
+* RemoveProduct ocekuva (body/raw/json), vo oblik:
 ```commandline
 {
     "name": "ime na product"
@@ -78,7 +81,21 @@ i
 
 
 * ListProducts ocekuva (Params/Query Params), KEY: "currency", VALUE: "XXX";
-where XXX is ("MKD", "USD", "EUR").
+kade XXX e nekoj od: ("MKD", "USD", "EUR").
 
+
+### Zabeleski
+
+* Verifikacijata na dozvolenite vrednosti koi mozat da se zacuvaat
+kaj modelot na Product (category, size) se vrsi na nivo na aplikacija. 
+Ova znaci deka nekoj so direkten pristap do data bazata moze da vnese i
+drugi vrednosti od predlozenite. Toa bi mozelo da se spreci so nesto nalik:
+```commandline
+db.Column(db.Enum(Choices, values=[]))
+```
+
+
+### Izrabotil:
+### Perkovikj Nino
 
 
