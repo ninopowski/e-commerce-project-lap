@@ -17,6 +17,7 @@ API endpoints, i
 
 * Vo requirements.txt se navedeni site potrebni moduli i paketi
 koi e potrebno da se instaliraat kako bi rabotela aplikacijata.
+* Python version: 3.80
 * Run app.py za start
 * Konekcijata so API-to i negovoto testiranje moze da se napravi
 so pomos na Postman preku local host (http://127.0.0.1:5000/)
@@ -58,6 +59,6 @@ so ostanatite fajlovi.
 }
 ```
 
-### Avtor
+
 
 

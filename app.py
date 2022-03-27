@@ -1,3 +1,4 @@
+import re
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
@@ -45,13 +46,20 @@ db.create_all()
 
 
 # verify if it's a valid credit card number
+def has_four_same_cons_digits(num):
+    match = re.search(r'(\d)\1{3}', str(num))
+    return match is not None
+
 def verify_credit_card(card_num):
+    card_num = str(card_num)
     if len(card_num) != 16:
         return False
+    elif card_num[0] not in ("4", "5", "6"):
+        return False
+    elif has_four_same_cons_digits(card_num):
+        return False
     else:
-        if card_num[0] not in (4, 5, 6):
-            return False
-        #TODO: finish it
+        return True
 
 
 
@@ -70,6 +78,16 @@ class AddUser(Resource):
                 "msg": "User with that email already exists"
             }
             return jsonify(return_map)
+
+        #check if valid credit card
+        credit_card = posted_data["credit card"]
+        if credit_card:
+            if not verify_credit_card(credit_card):
+                return_map = {
+                    "status code": 405,
+                    "msg": "Invalid credit card number"
+                }
+                return jsonify(return_map)
 
         #add user to db
         new_user = Users(
