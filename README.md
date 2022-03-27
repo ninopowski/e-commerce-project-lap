@@ -27,13 +27,15 @@ so ostanatite fajlovi.
 
 ### API Endpoints
 
-| Resource      | Address         | http Protocol | Params                    |
-|---------------|-----------------|---------------|---------------------------|
-| AddUser       | /add_user       | POST          | {full json}*              |
-| RemoveUser    | /remove_user    | DELETE        | {"email":"user@mail.com"} |
-| AddProduct    | /add_product    | POST          | {full json}*              |
-| RemoveProduct | /remove_product | DELETE        | {"name":"product_name"}   |
-| ListProducts  | /list_products  | GET           |                           |
+| Resource      | Address         | http Protocol | Params                            |
+|---------------|-----------------|---------------|-----------------------------------|
+| AddUser       | /add_user       | POST          | {full json}*                      |
+| RemoveUser    | /remove_user    | DELETE        | {"email":"user@mail.com"}         |
+| AddProduct    | /add_product    | POST          | {full json}*                      |
+| RemoveProduct | /remove_product | DELETE        | {"name":"product_name"}           |
+| ListProducts  | /list_products  | GET           | KEY: "currency"<br/> VALUE: "XXX" |
+
+
 
 * AddUser ocekuva podatoci (body/raw/json) vo sledniot oblik:
 ```commandline
@@ -41,12 +43,13 @@ so ostanatite fajlovi.
     "name": "ime",
     "last name": "prezime",
     "email": "mail@mail.com",
-    "credit card": "",
+    "credit card": 4567897658973215,
     "street and number": "ulica i broj",
     "post code": 1000,
     "city": "grad",
     "country": "drzava"
 }
+
 ```
 * AddProduct ocekuva podatoci (body/raw/json) vo sledniot oblik:
 ```commandline
@@ -55,10 +58,27 @@ so ostanatite fajlovi.
     "category": "pizami",
     "amount": 2,
     "size": "XL",
-    "price": 1900
+    "price": 1900,
+    "currency": "MKD"
+}
+```
+* RemoveUser i RemoveProduct ocekuvaat (body/raw/json), vo oblik (soodvetno):
+
+```
+  {
+    "email": "user@mail.com"
+}
+```
+i 
+```commandline
+{
+    "name": "ime na product"
 }
 ```
 
+
+* ListProducts ocekuva (Params/Query Params), KEY: "currency", VALUE: "XXX";
+where XXX is ("MKD", "USD", "EUR").
 
 
 

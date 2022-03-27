@@ -38,6 +38,7 @@ class Products(db.Model):
     amount = db.Column(db.Integer, nullable=False)
     size = db.Column(db.String(2), nullable=False)
     price = db.Column(db.Float, nullable=False)
+    currency = db.Column(db.String(3), nullable=False)
 
     def to_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -62,7 +63,6 @@ def verify_credit_card(card_num):
         return True
 
 
-
 # creating a resource
 class AddUser(Resource):
 
@@ -74,7 +74,7 @@ class AddUser(Resource):
         user_email = posted_data["email"]
         if Users.query.filter_by(email=user_email).first():
             return_map = {
-                "status code": 403,
+                "status code": 409,
                 "msg": "User with that email already exists"
             }
             return jsonify(return_map)
@@ -84,7 +84,7 @@ class AddUser(Resource):
         if credit_card:
             if not verify_credit_card(credit_card):
                 return_map = {
-                    "status code": 405,
+                    "status code": 408,
                     "msg": "Invalid credit card number"
                 }
                 return jsonify(return_map)
@@ -154,12 +154,21 @@ class AddProduct(Resource):
             }
             return jsonify(return_map)
 
+        #check if valid currency
+        if posted_data["currency"] not in ("MKD", "USD", "EUR"):
+            return_map = {
+                "status code": 406,
+                "msg": "Invalid currency"
+            }
+            return jsonify(return_map)
+
         new_product = Products (
             name=posted_data["name"],
             category=posted_data["category"],
             amount=posted_data["amount"],
             size=posted_data["size"],
-            price=posted_data["price"]
+            price=posted_data["price"],
+            currency=posted_data["currency"]
         )
         db.session.add(new_product)
         db.session.commit()
@@ -193,11 +202,44 @@ class RemoveProduct(Resource):
             return jsonify(return_map)
 
 
+
+conversion_rates = {
+    "MKD to USD": 0.018,
+    "MKD to EUR": 0.016,
+    "USD to MKD": 56.09,
+    "USD to EUR": 0.91,
+    "EUR to MKD": 61.61,
+    "EUR to USD": 1.10
+}
+
+def convert(value, convert_from, convert_to):
+    if convert_from == "MKD" and convert_to == "USD":
+        return value * conversion_rates["MKD to USD"]
+    elif convert_from == "MKD" and convert_to == "EUR":
+        return value * conversion_rates["MKD to EUR"]
+    elif convert_from == "USD" and convert_to == "MKD":
+        return value * conversion_rates["USD to MKD"]
+    elif convert_from == "USD" and convert_to == "EUR":
+        return value * conversion_rates["USD to EUR"]
+    elif convert_from == "EUR" and convert_to == "MKD":
+        return value * conversion_rates["EUR to MKD"]
+    elif convert_from == "EUR" and convert_to == "USD":
+        return value * conversion_rates["EUR to USD"]
+
+
 class ListProducts(Resource):
 
     def get(self):
-        all_products = Products.query.order_by(Products.price)
-        return jsonify(products_by_price=[product.to_dict() for product in all_products])
+        desired_currency = request.args.get("currency")
+        all_products = Products.query.all()
+        all_products_dict = [product.to_dict() for product in all_products]
+        for item in all_products_dict:
+            if item["currency"] != desired_currency:
+                item["price"] = convert(item["price"], item["currency"], desired_currency)
+                item["currency"] = desired_currency
+        all_dict_sorted = sorted(all_products_dict, key=lambda item: item["price"])
+
+        return jsonify(products_by_price=[item for item in all_dict_sorted])
 
 
 
